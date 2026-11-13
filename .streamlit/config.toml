@@ -1,0 +1,9 @@
+[theme.light]
+secondaryBackgroundColor = "#ffffff"
+textColor = "#1e293b"
+borderColor = "#cbd5e1"
+
+[theme.dark]
+secondaryBackgroundColor = "#ffffff"
+textColor = "#1e293b"
+borderColor = "#cbd5e1"
