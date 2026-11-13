@@ -6,7 +6,7 @@ import streamlit as st
 
 from base import REGIOES, SOLICITANTES
 from banco import aprovar, listar, pedido, solicitar
-from salesforce import acompanhar_envios, carregar_leads
+from salesforce import acompanhar_envios, carregar_leads, consultar, sessao
 from collections import Counter
 
 QUANTIDADES = (50, 100, 150, 200, 250, 300, 350, 400, 450, 500,
@@ -156,15 +156,43 @@ if 'sessao_pedidos' not in st.session_state:
     st.session_state.sessao_pedidos = token_urlsafe(32)
     st.session_state.codigos = []
 
+@st.cache_data(ttl=600, show_spinner=False)
+def listar_empreendimentos():
+    registros = consultar(
+        sessao(),
+        "SELECT Name FROM Empreendimento__c WHERE Regional__c = 'RJ' "
+        "AND UnidadeDeNegocio__c = 'Direcional' AND Id IN "
+        "(SELECT Empreendimento__c FROM Opportunity WHERE StageName = 'Cancelado')",
+    )
+    nomes = set()
+    for registro in registros:
+        nome = registro['Name']
+        try:
+            nome = nome.encode('latin1').decode('utf-8')
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            pass
+        nomes.add(nome)
+    return sorted(nomes, key=str.casefold)
+
+
+try:
+    projetos = listar_empreendimentos()
+    aviso_projetos = None if projetos else 'Nenhum empreendimento encontrado para a consulta atual.'
+except ValueError:
+    try:
+        projetos = sorted(st.secrets.get('regioes_empreendimentos', {}))
+    except OSError:
+        projetos = []
+    aviso_projetos = ('Salesforce temporariamente indisponível. Exibindo os empreendimentos configurados.'
+                      if projetos else 'Não foi possível carregar os empreendimentos do Salesforce.')
+
 with st.form('pedido'):
     nome = st.selectbox('Selecione seu nome', SOLICITANTES, index=None, placeholder='Selecione o solicitante')
     quantidade = st.selectbox('Quantos leads precisa?', QUANTIDADES)
     regioes = st.multiselect('Regiões', REGIOES, placeholder='Selecione uma ou mais regiões')
     st.caption('Deixe vazio para pegar de todas as regiões.')
-    try:
-        projetos = sorted(st.secrets.get('regioes_empreendimentos', {}))
-    except OSError:
-        projetos = []
+    if aviso_projetos:
+        st.caption(aviso_projetos)
     empreendimentos = st.multiselect('Empreendimentos', projetos, placeholder='Selecione um ou mais empreendimentos')
     st.caption('Deixe vazio para incluir todos os empreendimentos.')
     enviar = st.form_submit_button('Solicitar leads', type='primary', width='stretch')
