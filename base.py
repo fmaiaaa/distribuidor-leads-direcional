@@ -11,6 +11,11 @@ PASTA = Path(__file__).resolve().parent
 COLUNAS = ('Nome do Cliente', 'Telefone do Cliente', 'Coordenador/Gerente',
            'Data', 'Empreendimento', 'Região', 'Data de criação do empreendimento')
 REGIOES = ('Zona Norte', 'Zona Leste', 'Jacarepaguá/Barra', 'Zona Oeste', 'Baixada/Nova Iguaçu')
+SOLICITANTES = tuple(
+    ['Imob - ' + n for n in ('Daniel', 'João Paulo', 'Lucas Pinho', 'Andreza', 'Henrique Delaroli',
+                             'Paulo Victor', 'Yasmin', 'Lemos')]
+    + ['Coordenador Comercial - ' + n for n in ('Dutra', 'Leo', 'Marvin', 'Daniel', 'Luciano')]
+)
 
 
 def chave(texto):

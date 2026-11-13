@@ -4,6 +4,8 @@ No Streamlit Community Cloud, selecione este repositório, a branch main e o arq
 
 O banco Supabase guarda solicitações, atribuições e os arquivos aprovados. A migração incluída prepara o banco. O app consulta oportunidades no Salesforce quando o administrador aprova o código.
 
+Preencha `[supabase].IDENTITY_KEY` com um segredo aleatório exclusivo de pelo menos 32 caracteres e preserve o mesmo valor em todas as implantações. Ele protege o identificador derivado do CPF usado no bloqueio permanente. O painel compara registros vinculados diretamente à oportunidade e criados depois da aprovação.
+
 Para habilitar os filtros por empreendimento e região, adicione a seção `[regioes_empreendimentos]` nos Secrets. Use uma linha por empreendimento no formato `"Nome cadastrado no Salesforce" = "Zona Norte"`. Com a seção vazia, o pedido sem filtros continua disponível.
 
 Após a aprovação, o botão Baixar Excel aparece para o solicitante, que deve manter a aba aberta até baixar. O painel administrativo é acessível pelo botão Entrar como admin.

@@ -4,9 +4,10 @@ from secrets import compare_digest, token_urlsafe
 
 import streamlit as st
 
-from base import REGIOES
+from base import REGIOES, SOLICITANTES
 from banco import aprovar, listar, pedido, solicitar
-from salesforce import carregar_leads
+from salesforce import acompanhar_envios, carregar_leads
+from collections import Counter
 
 QUANTIDADES = (50, 100, 150, 200, 250, 300, 350, 400, 450, 500,
                750, 1000, 1250, 1500, 1750, 2000)
@@ -83,6 +84,45 @@ if admin:
         ], hide_index=True)
     else:
         st.info('Ainda não há solicitações.')
+    st.subheader('Resultados da distribuição')
+    por_pessoa = Counter()
+    por_canal = Counter()
+    for p in pedidos:
+        if p['total'] is None:
+            continue
+        por_pessoa[p['nome']] += p['total']
+        canal = p['nome'].split(' - ', 1)[0] if p['nome'] in SOLICITANTES else 'Histórico'
+        por_canal[canal] += p['total']
+    if por_pessoa:
+        st.dataframe([{'Solicitante': n, 'Leads enviados': q} for n, q in por_pessoa.most_common()], hide_index=True)
+        st.dataframe([{'Canal': n, 'Leads enviados': q} for n, q in por_canal.most_common()], hide_index=True)
+    if st.button('Consultar resultados no Salesforce'):
+        try:
+            with st.spinner('Consultando fases, avaliações e visitas…'):
+                envios = listar('distribuidor_retiradas', 'oportunidade_id,enviado_em,coordenador', order='telefone.asc')
+                resultados = acompanhar_envios(envios)
+            st.session_state.resultados_leads = resultados
+            st.session_state.envios_sem_vinculo = len(envios) - len(resultados)
+        except ValueError as exc:
+            st.error(str(exc))
+    if 'resultados_leads' in st.session_state:
+        resultados = st.session_state.resultados_leads
+        st.caption(f"{len(resultados)} oportunidades acompanhadas · {st.session_state.envios_sem_vinculo} envios antigos sem vínculo.")
+        if resultados:
+            fases = Counter(r['Fase atual'] for r in resultados)
+            st.dataframe([{'Fase atual': f, 'Oportunidades': q} for f, q in fases.most_common()], hide_index=True)
+            indicadores = ('Saiu de Cancelado', 'Nova avaliação', 'Novo agendamento', 'Visita realizada')
+            for indicador in indicadores:
+                st.metric(indicador, sum(r[indicador] for r in resultados))
+            canais = {}
+            for r in resultados:
+                nome = r['Solicitante']
+                canal = nome.split(' - ', 1)[0] if nome in SOLICITANTES else 'Histórico'
+                contagem = canais.setdefault(canal, Counter())
+                contagem['Oportunidades'] += 1
+                for indicador in indicadores:
+                    contagem[indicador] += r[indicador]
+            st.dataframe([{'Canal': canal, **contagem} for canal, contagem in canais.items()], hide_index=True)
     st.stop()
 
 
@@ -117,7 +157,7 @@ if 'sessao_pedidos' not in st.session_state:
     st.session_state.codigos = []
 
 with st.form('pedido'):
-    nome = st.text_input('Escreva o seu nome', max_chars=120)
+    nome = st.selectbox('Selecione seu nome', SOLICITANTES, index=None, placeholder='Selecione o solicitante')
     quantidade = st.selectbox('Quantos leads precisa?', QUANTIDADES)
     regioes = st.multiselect('Regiões', REGIOES, placeholder='Selecione uma ou mais regiões')
     st.caption('Deixe vazio para pegar de todas as regiões.')
