@@ -50,7 +50,7 @@ if admin:
     if not st.session_state.get('admin_autenticado'):
         with st.form('login'):
             senha = st.text_input('Senha administrativa', type='password')
-            entrar = st.form_submit_button('Entrar', type='primary')
+            entrar = st.form_submit_button('Entrar', type='primary', width='stretch')
         if entrar:
             if compare_digest(senha.encode(), senha_admin.encode()):
                 st.session_state.admin_autenticado = True
