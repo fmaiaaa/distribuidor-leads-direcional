@@ -51,38 +51,39 @@
 }
 [data-testid="stExpander"] summary { color: #04428f; }
 [data-testid="stExpander"] summary p { color: inherit; font-weight: 700; }
-/* Keep the form legible under either Streamlit theme. */
+/* The widget shell owns the background, including the clear and arrow controls. */
 .stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"],
-.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"] > div,
-.stApp [data-testid="stTextInput"] :is([data-baseweb="input"], [data-baseweb="base-input"]) {
-    color-scheme: light;
-    background-color: #fff !important;
-    color: #1e293b !important;
-    border-color: #e2e8f0 !important;
-}
-.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"] > div,
 .stApp [data-testid="stTextInput"] [data-baseweb="input"] {
-    border-radius: 10px;
-}
-.stApp :is([data-testid="stTextInput"], [data-testid="stSelectbox"], [data-testid="stMultiSelect"]) input {
-    background-color: #fff !important;
+    color-scheme: light;
+    background: #fff !important;
     color: #1e293b !important;
-    -webkit-text-fill-color: #1e293b;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
 }
-.stApp input::placeholder { color: #475569 !important; -webkit-text-fill-color: #475569; opacity: 1; }
-.stApp [data-baseweb="select"] svg { color: #334155 !important; fill: currentColor; }
+.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"] :is(div, input, button, [role="combobox"]),
+.stApp [data-testid="stTextInput"] [data-baseweb="input"] :is(div, input, button) {
+    background: transparent !important;
+    color: #1e293b !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"] > div {
+    border-radius: inherit !important;
+}
+.stApp :is([data-baseweb="select"], [data-baseweb="input"]):focus-within {
+    border-color: #5380b6 !important;
+    box-shadow: 0 0 0 3px rgba(4, 66, 143, .12) !important;
+}
+.stApp input::placeholder { color: #475569 !important; opacity: 1; }
+.stApp :is([data-baseweb="select"], [data-baseweb="input"]) svg { color: #334155 !important; }
 body [data-baseweb="popover"] :is([role="listbox"], [role="option"]) {
-    background-color: #fff !important;
+    background: #fff !important;
     color: #1e293b !important;
 }
 body [data-baseweb="popover"] [role="option"]:is(:hover, [aria-selected="true"]) {
-    background-color: #eaf2fb !important;
+    background: #eaf2fb !important;
 }
 [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"] { width: 100%; }
-.stApp [data-baseweb="input"]:focus-within, .stApp [data-baseweb="select"]:focus-within > div {
-    border-color: #5380b6;
-    box-shadow: 0 0 0 3px rgba(4, 66, 143, .08);
-}
 [data-testid="stFormSubmitButton"] button, [data-testid="stDownloadButton"] button {
     width: 100%;
     justify-content: center;
