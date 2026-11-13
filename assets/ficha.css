@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap');
+
+.stApp {
+    font-family: Inter, sans-serif;
+    color: #1e293b;
+    color-scheme: light;
+    background: linear-gradient(135deg, rgba(4, 66, 143, .82), rgba(30, 58, 95, .55) 38%, rgba(203, 9, 53, .22) 72%, rgba(15, 23, 42, .45)), url('__FUNDO__') center / cover fixed;
+}
+[data-testid="stHeader"], [data-testid="stMain"] { background: transparent; }
+[data-testid="stToolbar"] { color: white; }
+.stMainBlockContainer.block-container {
+    max-width: 920px;
+    width: calc(100% - 2 * clamp(14px, 5vw, 56px));
+    margin: clamp(55px, 8vh, 90px) auto 28px;
+    padding: 1.45rem clamp(1rem, 4vw, 2.25rem) 1.55rem;
+    background: rgba(255, 255, 255, .78);
+    backdrop-filter: blur(18px) saturate(1.15);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, .45);
+    box-shadow: 0 24px 48px -12px rgba(4, 66, 143, .24);
+    animation: fichaFadeIn .7s ease-out both;
+}
+.ficha-hero { text-align: center; padding-top: .2rem; }
+.ficha-hero img { display: block; width: min(280px, 75%); max-height: 72px; object-fit: contain; margin: 0 auto .7rem; }
+.ficha-hero h1 {
+    font: 900 clamp(1.35rem, 3.5vw, 1.75rem)/1.25 Montserrat, sans-serif;
+    letter-spacing: -.02em;
+    color: #04428f;
+    margin: 0;
+    padding: 0;
+}
+.ficha-hero-bar {
+    height: 4px;
+    margin: .3rem 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #04428f, #cb0935, #04428f);
+    background-size: 200% 100%;
+    animation: fichaShimmer 4s ease-in-out infinite alternate;
+}
+[data-testid="stForm"] {
+    background: rgba(255, 255, 255, .86);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: clamp(.85rem, 3vw, 1.35rem);
+}
+[data-testid="stWidgetLabel"] p, [data-testid="stCaptionContainer"] p { color: #334155; }
+[data-testid="stExpander"] details {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+[data-testid="stExpander"] summary { color: #04428f; }
+[data-testid="stExpander"] summary p { color: inherit; font-weight: 700; }
+.stApp [data-baseweb="input"], .stApp [data-baseweb="base-input"],
+.stApp [data-baseweb="select"] > div {
+    background: #fff !important;
+    color: #1e293b !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+.stApp input { background: transparent !important; color: #1e293b !important; }
+.stApp input::placeholder { color: #475569 !important; opacity: 1; }
+.stApp [data-baseweb="select"] svg { color: #334155 !important; fill: currentColor; }
+[data-baseweb="popover"] [role="listbox"],
+[data-baseweb="popover"] [role="option"] { background: #fff !important; color: #1e293b !important; }
+[data-baseweb="popover"] [role="option"]:hover { background: #eaf2fb !important; }
+[data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"] { width: 100%; }
+.stApp [data-baseweb="input"]:focus-within, .stApp [data-baseweb="select"]:focus-within > div {
+    border-color: #5380b6;
+    box-shadow: 0 0 0 3px rgba(4, 66, 143, .08);
+}
+[data-testid="stFormSubmitButton"] button, [data-testid="stDownloadButton"] button {
+    width: 100%;
+    justify-content: center;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: transform .2s, box-shadow .2s;
+}
+[data-testid="stFormSubmitButton"] button {
+    background: linear-gradient(180deg, #cb0935, #9e0828);
+    border-color: #9e0828;
+    color: white;
+}
+[data-testid="stDownloadButton"] button { color: #04428f; background: white; border-color: #a6bfdc; }
+.st-key-entrar_admin button {
+    background: #fff !important;
+    color: #04428f !important;
+    border: 1px solid #a6bfdc;
+    border-radius: 12px;
+    font-weight: 700;
+}
+[data-testid="stFormSubmitButton"] button:hover, [data-testid="stDownloadButton"] button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -6px rgba(4, 66, 143, .25);
+}
+@keyframes fichaFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+[data-testid="stDialog"] [role="dialog"] {
+    background: #fff;
+    color: #1e293b;
+    border-top: 4px solid #cb0935;
+    border-radius: 20px;
+}
+[data-testid="stDialog"] h2 { color: #04428f; font-family: Montserrat, sans-serif; }
+[data-testid="stDialog"] pre { background: #eaf2fb; color: #04428f; font-size: 1.2rem; letter-spacing: .16em; }
+@keyframes fichaShimmer { to { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) {
+    .stMainBlockContainer.block-container, .ficha-hero-bar { animation: none; }
+    [data-testid="stFormSubmitButton"] button, [data-testid="stDownloadButton"] button { transition: none; }
+}

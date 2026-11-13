@@ -1,0 +1,8 @@
+.env*
+.streamlit/secrets.toml
+senha-admin.txt
+*.sqlite*
+*.xlsx
+empreendimentos.csv
+__pycache__/
+supabase/.temp/
