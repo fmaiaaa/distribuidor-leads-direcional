@@ -76,11 +76,25 @@
 }
 .stApp input::placeholder { color: #475569 !important; opacity: 1; }
 .stApp :is([data-baseweb="select"], [data-baseweb="input"]) svg { color: #334155 !important; }
-body [data-baseweb="popover"] :is([role="listbox"], [role="option"]) {
+/* Streamlit renders the dropdown in a portal outside the form. */
+body :is([data-testid="stSelectboxVirtualDropdown"], [data-testid="stMultiSelectVirtualDropdown"], [data-baseweb="menu"], [role="listbox"]),
+body :is([data-baseweb="popover"], [data-baseweb="layer"]):has([role="listbox"]) {
+    color-scheme: light;
+    background: #fff !important;
+    color: #1e293b !important;
+    border-color: #cbd5e1 !important;
+}
+body [role="listbox"] :is(li, [role="option"]),
+body :is([data-testid="stSelectboxVirtualDropdown"], [data-testid="stMultiSelectVirtualDropdown"]) [role="option"] {
     background: #fff !important;
     color: #1e293b !important;
 }
-body [data-baseweb="popover"] [role="option"]:is(:hover, [aria-selected="true"]) {
+body [role="listbox"] :is(li, [role="option"]) :is(div, span) {
+    background: transparent !important;
+    color: inherit !important;
+}
+body [role="listbox"] [role="option"]:is(:hover, :focus-visible, [aria-selected="true"]),
+body [role="listbox"] li:hover {
     background: #eaf2fb !important;
 }
 [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"] { width: 100%; }
