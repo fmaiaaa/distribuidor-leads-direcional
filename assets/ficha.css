@@ -51,19 +51,33 @@
 }
 [data-testid="stExpander"] summary { color: #04428f; }
 [data-testid="stExpander"] summary p { color: inherit; font-weight: 700; }
-.stApp [data-baseweb="input"], .stApp [data-baseweb="base-input"],
-.stApp [data-baseweb="select"] > div {
-    background: #fff !important;
+/* Keep the form legible under either Streamlit theme. */
+.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"],
+.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"] > div,
+.stApp [data-testid="stTextInput"] :is([data-baseweb="input"], [data-baseweb="base-input"]) {
+    color-scheme: light;
+    background-color: #fff !important;
     color: #1e293b !important;
-    border: 1px solid #e2e8f0;
+    border-color: #e2e8f0 !important;
+}
+.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="select"] > div,
+.stApp [data-testid="stTextInput"] [data-baseweb="input"] {
     border-radius: 10px;
 }
-.stApp input { background: transparent !important; color: #1e293b !important; }
-.stApp input::placeholder { color: #475569 !important; opacity: 1; }
+.stApp :is([data-testid="stTextInput"], [data-testid="stSelectbox"], [data-testid="stMultiSelect"]) input {
+    background-color: #fff !important;
+    color: #1e293b !important;
+    -webkit-text-fill-color: #1e293b;
+}
+.stApp input::placeholder { color: #475569 !important; -webkit-text-fill-color: #475569; opacity: 1; }
 .stApp [data-baseweb="select"] svg { color: #334155 !important; fill: currentColor; }
-[data-baseweb="popover"] [role="listbox"],
-[data-baseweb="popover"] [role="option"] { background: #fff !important; color: #1e293b !important; }
-[data-baseweb="popover"] [role="option"]:hover { background: #eaf2fb !important; }
+body [data-baseweb="popover"] :is([role="listbox"], [role="option"]) {
+    background-color: #fff !important;
+    color: #1e293b !important;
+}
+body [data-baseweb="popover"] [role="option"]:is(:hover, [aria-selected="true"]) {
+    background-color: #eaf2fb !important;
+}
 [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"] { width: 100%; }
 .stApp [data-baseweb="input"]:focus-within, .stApp [data-baseweb="select"]:focus-within > div {
     border-color: #5380b6;
