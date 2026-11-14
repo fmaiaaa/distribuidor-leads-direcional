@@ -109,7 +109,7 @@ body [role="listbox"] li:hover {
 .stApp :is([data-testid="stButton"], [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"]) button p {
     color: inherit !important;
 }
-.stApp [data-testid="stFormSubmitButton"] button[kind="primary"] {
+.stApp :is([data-testid="stFormSubmitButton"], [data-testid="stButton"]) button[kind="primary"] {
     border-color: #9e0828 !important;
     background: #b90830 !important;
     color: #fff !important;
