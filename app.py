@@ -59,7 +59,7 @@ if admin:
         st.stop()
     with st.form('aprovar'):
         codigo = st.text_input('Código do pedido', max_chars=10)
-        liberar = st.form_submit_button('Liberar download', type='primary')
+        liberar = st.form_submit_button('Liberar download', type='primary', width='stretch')
     if liberar:
         try:
             with st.spinner('Consultando oportunidades no Salesforce…'):
@@ -96,7 +96,7 @@ if admin:
     if por_pessoa:
         st.dataframe([{'Solicitante': n, 'Leads enviados': q} for n, q in por_pessoa.most_common()], hide_index=True)
         st.dataframe([{'Canal': n, 'Leads enviados': q} for n, q in por_canal.most_common()], hide_index=True)
-    if st.button('Consultar resultados no Salesforce'):
+    if st.button('Consultar resultados no Salesforce', width='stretch'):
         try:
             with st.spinner('Consultando fases, avaliações e visitas…'):
                 envios = listar('distribuidor_retiradas', 'oportunidade_id,enviado_em,coordenador', order='telefone.asc')
