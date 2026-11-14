@@ -97,30 +97,33 @@ body [role="listbox"] [role="option"]:is(:hover, :focus-visible, [aria-selected=
 body [role="listbox"] li:hover {
     background: #eaf2fb !important;
 }
-[data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"] { width: 100%; }
-[data-testid="stFormSubmitButton"] button, [data-testid="stDownloadButton"] button {
-    width: 100%;
+.stApp :is([data-testid="stButton"], [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"]) button {
     justify-content: center;
+    border: 1px solid #a6bfdc !important;
     border-radius: 12px;
-    font-weight: 700;
-    transition: transform .2s, box-shadow .2s;
-}
-[data-testid="stFormSubmitButton"] button {
-    background: linear-gradient(180deg, #cb0935, #9e0828);
-    border-color: #9e0828;
-    color: white;
-}
-[data-testid="stDownloadButton"] button { color: #04428f; background: white; border-color: #a6bfdc; }
-.st-key-entrar_admin button {
     background: #fff !important;
     color: #04428f !important;
-    border: 1px solid #a6bfdc;
-    border-radius: 12px;
     font-weight: 700;
+    transition: background-color .2s, box-shadow .2s;
 }
-[data-testid="stFormSubmitButton"] button:hover, [data-testid="stDownloadButton"] button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px -6px rgba(4, 66, 143, .25);
+.stApp :is([data-testid="stButton"], [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"]) button p {
+    color: inherit !important;
+}
+.stApp [data-testid="stFormSubmitButton"] button[kind="primary"] {
+    border-color: #9e0828 !important;
+    background: #b90830 !important;
+    color: #fff !important;
+}
+.stApp :is([data-testid="stButton"], [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"]) button:not(:disabled):hover {
+    box-shadow: 0 4px 12px rgba(4, 66, 143, .18);
+}
+.stApp :is([data-testid="stButton"], [data-testid="stFormSubmitButton"], [data-testid="stDownloadButton"]) button:focus-visible {
+    outline: 2px solid #5380b6;
+    outline-offset: 2px;
+}
+.stApp :is([data-testid="stSelectbox"], [data-testid="stMultiSelect"]) [data-baseweb="tag"] {
+    background: #eaf2fb !important;
+    color: #04428f !important;
 }
 @keyframes fichaFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 [data-testid="stDialog"] [role="dialog"] {
