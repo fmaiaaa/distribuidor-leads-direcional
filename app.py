@@ -4,7 +4,7 @@ from secrets import compare_digest, token_urlsafe
 
 import streamlit as st
 
-from base import REGIOES, SOLICITANTES
+from base import REGIOES, SOLICITANTES, chave
 from banco import aprovar, listar, pedido, solicitar
 from salesforce import acompanhar_envios, carregar_leads, consultar, sessao
 from collections import Counter
@@ -176,26 +176,53 @@ def listar_empreendimentos():
 
 
 try:
+    mapa_projetos = st.secrets.get('regioes_empreendimentos', {})
+except OSError:
+    mapa_projetos = {}
+regiao_por_projeto = {chave(nome): regiao for nome, regiao in mapa_projetos.items()}
+
+try:
     projetos = listar_empreendimentos()
     aviso_projetos = None if projetos else 'Nenhum empreendimento encontrado para a consulta atual.'
 except ValueError:
-    try:
-        projetos = sorted(st.secrets.get('regioes_empreendimentos', {}))
-    except OSError:
-        projetos = []
+    projetos = sorted(mapa_projetos)
     aviso_projetos = ('Salesforce temporariamente indisponível. Exibindo os empreendimentos configurados.'
                       if projetos else 'Não foi possível carregar os empreendimentos do Salesforce.')
 
-with st.form('pedido'):
+with st.container(border=True):
     nome = st.selectbox('Selecione seu nome', SOLICITANTES, index=None, placeholder='Selecione o solicitante')
     quantidade = st.selectbox('Quantos leads precisa?', QUANTIDADES)
-    regioes = st.multiselect('Regiões', REGIOES, placeholder='Selecione uma ou mais regiões')
-    st.caption('Deixe vazio para pegar de todas as regiões.')
+    if not regiao_por_projeto:
+        st.session_state.regioes_pedido = []
+    regioes = st.multiselect(
+        'Regiões', REGIOES, placeholder='Selecione uma ou mais regiões',
+        key='regioes_pedido', disabled=not regiao_por_projeto,
+    )
+    if regiao_por_projeto:
+        st.caption('Deixe vazio para pegar de todas as regiões.')
+    else:
+        st.caption('Filtro de região indisponível até configurar o mapeamento de empreendimentos.')
+
+    opcoes = [projeto for projeto in projetos
+              if not regioes or regiao_por_projeto.get(chave(projeto)) in regioes]
+    selecao = st.session_state.get('empreendimentos_pedido', [])
+    selecionados = [projeto for projeto in selecao if projeto in opcoes]
+    if selecionados != selecao:
+        st.session_state.empreendimentos_pedido = selecionados
     if aviso_projetos:
         st.caption(aviso_projetos)
-    empreendimentos = st.multiselect('Empreendimentos', projetos, placeholder='Selecione um ou mais empreendimentos')
-    st.caption('Deixe vazio para incluir todos os empreendimentos.')
-    enviar = st.form_submit_button('Solicitar leads', type='primary', width='stretch')
+    empreendimentos = st.multiselect(
+        'Empreendimentos', opcoes, placeholder='Selecione um ou mais empreendimentos',
+        key='empreendimentos_pedido', disabled=not opcoes,
+    )
+    if regioes and not opcoes:
+        st.caption('Nenhum empreendimento disponível nas regiões selecionadas.')
+    else:
+        st.caption('Deixe vazio para incluir todos os empreendimentos disponíveis.')
+    enviar = st.button(
+        'Solicitar leads', type='primary', width='stretch',
+        disabled=bool(regioes and not opcoes),
+    )
 
 if st.button('Entrar como admin', key='entrar_admin', width='stretch'):
     st.session_state.abrir_admin = True
