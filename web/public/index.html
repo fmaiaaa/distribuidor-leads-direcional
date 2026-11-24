@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distribuidor de leads | Direcional</title>
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+<header><img src="/assets/logo.png" alt="Direcional"></header>
+<main>
+  <section class="intro"><h1>Retirada de leads</h1><p>Escolha os filtros e solicite um lote.</p></section>
+  <form id="solicitacao">
+    <label>Solicitante<select id="nome" required><option value="">Selecione seu nome</option></select></label>
+    <label>Quantidade<select id="quantidade" required></select></label>
+    <details><summary>Regiões</summary><fieldset id="regioes" aria-label="Regiões"></fieldset></details>
+    <details><summary>Empreendimentos</summary><fieldset id="projetos" aria-label="Empreendimentos"></fieldset></details>
+    <p class="nota">Deixe os filtros vazios para buscar em toda a base.</p>
+    <button id="solicitar" disabled>Solicitar leads</button>
+  </form>
+  <p id="status" role="status"></p>
+  <button id="baixar" hidden>Baixar Excel</button>
+  <button class="secundario" id="abrir-admin">Entrar como admin</button>
+  <dialog id="codigo"><h2>Código da solicitação</h2><p>Envie este código ao administrador para liberar o download.</p><output id="numero"></output><form method="dialog"><button class="secundario">Fechar</button></form></dialog>
+  <dialog id="admin">
+    <h2>Painel administrativo</h2>
+    <form id="entrar"><label>Senha administrativa<input id="senha" type="password" required></label><button>Entrar</button></form>
+    <div id="painel" hidden>
+      <form id="aprovar"><label>Código do pedido<input id="liberar" required maxlength="10"></label><button>Liberar download</button></form>
+      <h3>Solicitações</h3><ul id="pedidos"></ul>
+      <h3>Leads enviados por solicitante e canal</h3><ul id="totais"></ul>
+      <button type="button" id="consultar-indicadores">Consultar indicadores no Salesforce</button>
+      <section id="indicadores" aria-label="Indicadores de recuperação"></section>
+      <details><summary>Leads enviados</summary><ul id="leads-enviados"></ul></details>
+      <details><summary>Coordenadores no Salesforce</summary><ul id="mapa-coordenadores"></ul></details>
+    </div>
+    <p id="status-admin" role="status"></p>
+    <form method="dialog"><button class="secundario">Voltar ao formulário</button></form>
+  </dialog>
+</main>
+</html>

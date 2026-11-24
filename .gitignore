@@ -3,6 +3,8 @@
 senha-admin.txt
 *.sqlite*
 *.xlsx
-empreendimentos.csv
 __pycache__/
 supabase/.temp/
+*.log
+estoque_dev/
+web/.vercel/

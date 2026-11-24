@@ -21,7 +21,10 @@ def sessao():
             f'<password>{escape(c["PASSWORD"] + c.get("TOKEN", ""))}</password>'
             '</login></env:Body></env:Envelope>'
         )
-        req = Request('https://login.salesforce.com/services/Soap/u/59.0', envelope.encode(),
+        dominio = c.get('DOMAIN', 'direcional.my')
+        if not re.fullmatch(r'[a-zA-Z0-9.-]+', dominio):
+            raise ValueError('Domínio Salesforce inválido.')
+        req = Request(f'https://{dominio}.salesforce.com/services/Soap/u/59.0', envelope.encode(),
                       {'Content-Type': 'text/xml;charset=UTF-8', 'SOAPAction': 'login'})
         with urlopen(req, timeout=20) as response:
             login = ElementTree.fromstring(response.read())
@@ -55,14 +58,16 @@ def cpf(valor):
     return re.sub(r'\D', '', valor or '')
 
 
-def oportunidades():
+def oportunidades(limite=None):
     conexao = sessao()
+    filtro_data = f' AND CreatedDate <= {limite}' if limite else ''
     registros = list(consultar(conexao,
         'SELECT Id,CreatedDate,AccountId,Account.CPF__c,Account.Name,Account.TelefoneCelular__c,'
         'Account.PersonMobilePhone,Account.Phone,Telefone_Principal__c,Telefone__c,'
         'Empreendimento__r.Name,Empreendimento__r.CreatedDate FROM Opportunity '
         "WHERE StageName = 'Cancelado' AND AccountId != null AND Empreendimento__r.Regional__c = 'RJ' "
-        "AND Empreendimento__r.UnidadeDeNegocio__c = 'Direcional' ORDER BY CreatedDate DESC, Id"))
+        "AND Empreendimento__r.UnidadeDeNegocio__c = 'Direcional'"
+        + filtro_data + ' ORDER BY CreatedDate DESC, Id'))
     documentos = {cpf((r.get('Account') or {}).get('CPF__c')) for r in registros}
     documentos = {n for n in documentos if len(n) == 11 and len(set(n)) > 1}
     variantes = documentos | {f'{n[:3]}.{n[3:6]}.{n[6:9]}-{n[9:]}' for n in documentos}
@@ -81,9 +86,16 @@ def oportunidades():
             yield r
 
 
-def carregar_leads():
-    regioes = {chave(n): r for n, r in st.secrets.get('regioes_empreendimentos', {}).items()}
-    for item in oportunidades():
+def carregar_leads(limite=None):
+    import csv
+    from pathlib import Path
+    caminho = Path(__file__).with_name('empreendimentos.csv')
+    regioes = {}
+    if caminho.exists():
+        with caminho.open(encoding='utf-8-sig', newline='') as arquivo:
+            regioes = {chave(r['Empreendimento']): r['Região'] for r in csv.DictReader(arquivo, delimiter=';')}
+    regioes.update({chave(n): r for n, r in st.secrets.get('regioes_empreendimentos', {}).items()})
+    for item in oportunidades(limite):
         conta = item.get('Account') or {}
         nome = conta.get('Name')
         telefone = next((v for v in (item.get('Telefone_Principal__c'), conta.get('TelefoneCelular__c'),
