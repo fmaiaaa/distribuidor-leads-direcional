@@ -1,6 +1,7 @@
 import json
 import secrets
 import hmac
+import logging
 from base64 import b64encode
 from datetime import datetime
 from urllib.error import HTTPError, URLError
@@ -28,6 +29,11 @@ def api(recurso, filtros=None, corpo=None):
             dados = resp.read()
             return json.loads(dados) if dados else None
     except HTTPError as exc:
+        try:
+            codigo = json.loads(exc.read()).get('code', 'sem código')
+        except (ValueError, AttributeError):
+            codigo = 'sem código'
+        logging.error('Supabase HTTP %s, código %s, recurso %s', exc.code, codigo, recurso)
         if exc.code == 409:
             raise ValueError('Outro pedido usou parte desse lote. Tente aprovar novamente.') from None
         raise ValueError('Não foi possível acessar o Supabase. Confira os Secrets e a configuração do banco.') from None

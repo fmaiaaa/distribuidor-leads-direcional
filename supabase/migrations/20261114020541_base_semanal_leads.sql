@@ -20,7 +20,7 @@ create function public.distribuidor_atualizar_base(p_leads jsonb)
 returns integer language plpgsql security invoker set search_path = '' as $$
 begin
  lock table public.distribuidor_base in share row exclusive mode;
- delete from public.distribuidor_base;
+ delete from public.distribuidor_base where true;
  insert into public.distribuidor_base
  select * from jsonb_populate_recordset(null::public.distribuidor_base, p_leads);
  return jsonb_array_length(p_leads);
