@@ -18,7 +18,7 @@ Instale requirements.txt com python -m pip install -r requirements.txt.
 Configure .streamlit/secrets.toml conforme secrets.example.toml, preservando a mesma IDENTITY_KEY em todas as cargas.
 Execute python atualizar_base.py. O arquivo Atualizar base de leads.bat faz a carga e registra a tarefa semanal.
 O corte usa CreatedDate da oportunidade até o fim do dia de três meses antes, no fuso America/Sao_Paulo.
-São selecionadas oportunidades Cancelado, de empreendimentos RJ e Direcional. Clientes com qualquer oportunidade não cancelada são excluídos, inclusive em outra conta com o mesmo CPF. Nome, telefone, conta e CPF são deduplicados.
+São selecionadas oportunidades Cancelado, de empreendimentos RJ e Direcional. Clientes podem ter outras oportunidades não canceladas. Nome, telefone, conta e CPF são deduplicados.
 empreendimentos.csv guarda o mapeamento das regiões. A seção regioes_empreendimentos nos secrets pode complementar o cadastro.
 
 ## Administração

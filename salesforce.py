@@ -68,22 +68,11 @@ def oportunidades(limite=None):
         "WHERE StageName = 'Cancelado' AND AccountId != null AND Empreendimento__r.Regional__c = 'RJ' "
         "AND Empreendimento__r.UnidadeDeNegocio__c = 'Direcional'"
         + filtro_data + ' ORDER BY CreatedDate DESC, Id'))
-    documentos = {cpf((r.get('Account') or {}).get('CPF__c')) for r in registros}
-    documentos = {n for n in documentos if len(n) == 11 and len(set(n)) > 1}
-    variantes = documentos | {f'{n[:3]}.{n[3:6]}.{n[6:9]}-{n[9:]}' for n in documentos}
-    ids_bloqueados, cpfs_bloqueados = set(), set()
-    for ids in grupos(r['AccountId'] for r in registros):
-        for r in consultar(conexao, "SELECT AccountId,Account.CPF__c FROM Opportunity WHERE StageName != 'Cancelado' AND AccountId IN (" + ids + ")"):
-            ids_bloqueados.add(r['AccountId'])
-            cpfs_bloqueados.add(cpf((r.get('Account') or {}).get('CPF__c')))
-    for valores in grupos(variantes):
-        for r in consultar(conexao, "SELECT Account.CPF__c FROM Opportunity WHERE StageName != 'Cancelado' AND Account.CPF__c IN (" + valores + ")"):
-            cpfs_bloqueados.add(cpf(r['Account']['CPF__c']))
-    elegiveis = documentos - cpfs_bloqueados
     for r in registros:
         documento = cpf((r.get('Account') or {}).get('CPF__c'))
-        if r['AccountId'] not in ids_bloqueados and documento in elegiveis:
+        if len(documento) == 11 and len(set(documento)) > 1:
             yield r
+
 
 
 def carregar_leads(limite=None):
